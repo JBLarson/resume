@@ -1,65 +1,40 @@
-# /toPdf.py
-
 import asyncio
 import os
 from pyppeteer import launch
+from fpdf import FPDF
 
-async def toPDF(html_file, pdf_file):
+async def toPDF(html_file: str, pdf_file: str):
     """
-    Converts a local HTML file to a high-fidelity PDF that mirrors the
-    on-screen appearance.
+    1. Renders index.html in headless Chrome.
+    2. Screenshots the resume container (exact layout).
+    3. Embeds that PNG on a single Letter‐size PDF page.
     """
     if not os.path.exists(html_file):
-        print(f"Error: The file '{html_file}' was not found.")
+        print(f"Error: '{html_file}' not found.")
         return
 
-    print("--- Launching Headless Browser ---")
-    browser = await launch(
-        # Some systems require these args to run Chrome headlessly
-        args=['--no-sandbox', '--disable-setuid-sandbox']
-    )
+    browser = await launch(args=["--no-sandbox", "--disable-setuid-sandbox"])
     page = await browser.newPage()
+    await page.setViewport({"width": 1280, "height": 800, "deviceScaleFactor": 2})
+    await page.emulateMedia("screen")
+    await page.goto(f"file://{os.path.abspath(html_file)}", {"waitUntil": "networkidle0"})
 
-    # 1. Set a realistic, high-resolution viewport
-    # This ensures the two-column layout renders correctly
-    print("--- Setting Viewport ---")
-    await page.setViewport({'width': 1280, 'height': 1080, 'deviceScaleFactor': 2})
+    # Grab just the resume card
+    handle = await page.querySelector(".shadow-2xl")
+    png_path = "resume.png"
+    await handle.screenshot({"path": png_path, "omitBackground": False})
 
-    # 2. **THIS IS THE KEY STEP**
-    # Force the page to render using screen media styles, not print styles
-    print("--- Emulating Screen Media ---")
-    await page.emulateMedia(mediaType='screen')
-
-    html_path = f"file://{os.path.abspath(html_file)}"
-    print(f"--- Navigating to {html_path} ---")
-
-    # 3. Wait until all network resources (CSS, fonts) are fully loaded
-    await page.goto(html_path, {'waitUntil': 'networkidle0'})
-
-    print("--- Generating PDF ---")
-    # 4. Generate the PDF with options for perfect fidelity
-    await page.pdf({
-        'path': pdf_file,
-        'width': '1280px', # Match the viewport width
-        'height': '1664px', # Approximate height for this resume, can be adjusted
-        'printBackground': True, # Crucial for rendering background colors
-        'pageRanges': '1', # Ensure only the first page is printed
-        'margin': { # Remove default headers, footers, and margins
-            'top': '0',
-            'right': '0',
-            'bottom': '0',
-            'left': '0'
-        }
-    })
-
-    print("--- Closing Browser ---")
     await browser.close()
-    print(f"\n✅ Success! Pixel-perfect PDF generated: {pdf_file}")
+
+    # Now embed into a Letter PDF
+    pdf = FPDF(unit="pt", format="letter")
+    pdf.add_page()
+    # Letter width = 612pt; auto scale height to preserve aspect ratio
+    pdf.image(png_path, x=0, y=0, w=612)
+    pdf.output(pdf_file)
+    print(f"✅ PDF written to {pdf_file} (via screenshot)")
 
 if __name__ == "__main__":
-    input_html = "index.html"
-    output_pdf = "JB_Larson_Resume.pdf"
-
     asyncio.get_event_loop().run_until_complete(
-        toPDF(input_html, output_pdf)
+        toPDF("index.html", "JB_Larson_Resume.pdf")
     )

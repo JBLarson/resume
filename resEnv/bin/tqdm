@@ -1,4 +1,4 @@
-#!/Users/jb/Code/resume/resEnv/bin/python3.12
+#!/Users/jb/Documents/GitHub/resume/resEnv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
