@@ -3,6 +3,7 @@ import os
 from pyppeteer import launch
 from fpdf import FPDF
 
+
 async def toPDF(html_file: str, pdf_file: str):
     """
     1. Renders index.html in headless Chrome.
