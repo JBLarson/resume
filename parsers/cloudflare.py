@@ -1,4 +1,4 @@
-# greenhouse parser for reddit jobs
+# greenhouse parser for cloudflare jobs
 
 import requests
 from bs4 import BeautifulSoup
@@ -11,8 +11,10 @@ import os
 # --- Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-redditUrl = "https://job-boards.greenhouse.io/reddit/jobs/6706371"
+# reddit
+#URL = "https://job-boards.greenhouse.io/reddit/jobs/6706371"
 
+cloudflareUrl = "https://job-boards.greenhouse.io/cloudflare/jobs/6819455?gh_jid=6819455"
 
 def fetch_job_data(url: str) -> str | None:
     """
@@ -132,8 +134,8 @@ def save_to_json(data: dict):
 
 # --- Main execution block ---
 if __name__ == "__main__":
-    html = fetch_job_data(redditUrl)
+    html = fetch_job_data(cloudflareUrl)
     if html:
-        parsed_data = parse_job_to_json(html, redditUrl)
+        parsed_data = parse_job_to_json(html, cloudflareUrl)
         if parsed_data:
             save_to_json(parsed_data)
