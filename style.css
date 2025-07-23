@@ -1,6 +1,5 @@
 /*
  * A Modern, Professional Resume Template CSS
- * Design by Gemini
  */
 
 /* -- Page & Font Setup -- */
@@ -17,6 +16,7 @@
     --light-color: #f1faee; /* A soft off-white for text on dark backgrounds */
     --dark-color: #333; /* For main body text */
     --meta-color: #666; /* For subtitles and metadata */
+    --border-color: #e0e0e0; /* A light gray for dividers */
 
     /* Typography */
     --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -55,7 +55,7 @@ html, body {
     color: var(--light-color);
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* This pushes content apart to fill space */
+    justify-content: space-between;
 }
 
 .sidebar-header .name {
@@ -111,7 +111,7 @@ html, body {
 .contact-list i {
     margin-right: 0.15in;
     color: var(--secondary-color);
-    width: 14px; /* Aligns the icons */
+    width: 14px;
     text-align: center;
 }
 
@@ -125,17 +125,9 @@ html, body {
     float: right;
 }
 
-.sidebar-footer {
-    font-size: 7pt;
-    color: var(--secondary-color);
-    text-align: center;
-}
-.sidebar-footer a {
-    color: var(--secondary-color);
-    text-decoration: none;
-}
-.sidebar-footer a:hover {
-    color: var(--light-color);
+footer p{
+    font-size: 1pt;
+    opacity: 0 !important;
 }
 
 
@@ -144,11 +136,14 @@ html, body {
     width: 65%;
     height: 100%;
     padding: 0.5in;
-    overflow-y: auto; /* For screen viewing */
+    overflow-y: auto;
 }
 
 .main-section {
     margin-bottom: 0.4in;
+}
+.main-section:last-child {
+    margin-bottom: 0;
 }
 
 .main-title {
@@ -168,67 +163,51 @@ html, body {
     color: var(--accent-color);
 }
 
-/* -- Timeline Styling for Experience & Education -- */
-.timeline {
-    position: relative;
-    padding-left: 0.4in;
-    border-left: 2px solid #e0e0e0;
-}
-
-.timeline-item {
-    position: relative;
+/* -- New, Robust Entry Styling -- */
+.entry {
     margin-bottom: 0.3in;
+    position: relative;
+    padding-left: 0.25in; /* Space for the decorative line */
 }
-.timeline-item:last-child {
+.entry:last-child {
     margin-bottom: 0;
 }
 
-/* The circle on the timeline */
-.timeline-item::before {
+/* Decorative Accent Line */
+.entry::before {
     content: '';
     position: absolute;
-    left: -0.2in;
-    top: 4px;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #fff;
-    border: 2px solid var(--secondary-color);
-    z-index: 1;
+    left: 0;
+    top: 5px;
+    height: calc(100% - 5px);
+    width: 3px;
+    background-color: var(--border-color);
 }
 
-.timeline-date {
-    position: absolute;
-    left: -1.1in;
-    top: 2px;
-    width: 0.7in;
-    text-align: right;
-    font-size: 8pt;
-    font-weight: bold;
-    color: var(--meta-color);
-}
-.timeline-date span {
-    display: block;
-}
-.timeline-date .start::before {
-    content: '–';
-    display: block;
-    margin: 2px 0;
+/* Header for Title and Date */
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
 }
 
-.timeline-content {
-    padding-left: 0.2in;
-}
-
-.item-title {
+.entry-title {
     font-size: 12pt;
     font-weight: bold;
     color: var(--dark-color);
-    margin: 0 0 2px 0;
+    margin: 0;
 }
 
-.item-subtitle {
+.entry-date {
+    font-size: 8pt;
+    font-weight: bold;
+    color: var(--meta-color);
+    white-space: nowrap; /* Prevents date from wrapping */
+    margin-left: 0.2in;
+}
+
+.entry-subtitle {
     font-size: 9pt;
     font-weight: normal;
     font-style: italic;
@@ -236,7 +215,8 @@ html, body {
     margin: 0 0 0.1in 0;
 }
 
-.item-details {
+.entry-details {
+    list-style-position: outside;
     list-style-type: disc;
     padding-left: 0.2in;
     margin: 0;
@@ -244,12 +224,13 @@ html, body {
     line-height: 1.5;
 }
 
-.item-details li {
+.entry-details li {
     margin-bottom: 0.05in;
 }
 
-.item-single-detail {
+.entry-single-detail {
     font-size: 9pt;
     line-height: 1.5;
     margin: 0;
+    padding-top: 0.1in;
 }
